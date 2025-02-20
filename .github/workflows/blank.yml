@@ -25,17 +25,56 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # SetUp NodejS
+      - name: use Node.JS 18.6
+        uses: action/setup-node@v1
+        with:
+          node-version: 18.6
+
+      #install dependance
+      - name: Install dependencies
+        run: npm ci
+
+      #Gulp Bundlw and package
+      - name: bundle and package
+        run: |
+         gulp-bundle --ship
+         gulp-package-solution --ship
+               
+       
      #sleep for 10 sec
       - name: Sleep for 10s
         uses: juliangruber/sleep-action@v1
         with:
-          time: 10s
+          time: 4s
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+     #Login M365 Tenant
+      - name: Microsoft Login
+        uses: pnp/action-cli-login@v3.0.0
+        with: 
+           ADMIN_USERNAME : ${{ secrets.adminUsername}}
+           ADMIN_PASSWORD : ${{ secrets.adminPassword}}
+
+        #deploy into sp appcatalog
+      - name: deploy spfx
+        uses: pnp/action-cli-deploy@v3.0.0
+        id: deploy
+        with:
+          APP_FILE_PATH: shrepoint/solution/${{ env.SPPKG_FILE_NAME }}
+          SKIP_FEATURE_DEPLOYMENT: true
+          OVERWRITE: true
+
+        
+
+
+
+
+
+
+
+
+
+
+
+        
+
