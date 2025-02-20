@@ -38,6 +38,7 @@ jobs:
       #Gulp Bundlw and package
       - name: bundle and package
         run: |
+         gulp-clean
          gulp-bundle --ship
          gulp-package-solution --ship
                
